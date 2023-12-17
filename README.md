@@ -1,16 +1,12 @@
 # i3350_project9
+This project demonstrates:
 
-A new Flutter project.
+How to use EncryptedSharedPreferences to store key
 
-## Getting Started
+How to create a REST service that writes to the database
 
-This project is a starting point for a Flutter application.
+How to send data using HTTP POST
 
-A few resources to get you started if this is your first Flutter project:
+How to protect from unauthorized access using a key
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Use flutter forms to validate input
