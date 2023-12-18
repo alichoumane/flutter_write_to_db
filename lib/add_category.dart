@@ -120,10 +120,8 @@ class _AddCategoryState extends State<AddCategory> {
           body: convert.jsonEncode(<String, String>{
             'cid': '$cid', 'name': name, 'key': myKey
           })).timeout(const Duration(seconds: 5));
-      if (response.statusCode == 200) {
-        // if successful, call the update function
-        update(response.body);
-      }
+          // call the update function
+          update(response.body);
     }
     catch (e) {
       update("connection error");
