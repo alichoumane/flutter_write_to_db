@@ -106,7 +106,7 @@ class _AddCategoryState extends State<AddCategory> {
 
 
 // below function sends the cid, name and key using http post to the REST service
-  void saveCategory(Function(String text) update, int cid, String name) async {
+  void addCategory(Function(String text) update, int cid, String name) async {
     try {
       // we need to first retrieve and decrypt the key
       String myKey = await _encryptedData.getString('myKey');

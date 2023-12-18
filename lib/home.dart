@@ -10,8 +10,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final TextEditingController _controller = TextEditingController();
-  final EncryptedSharedPreferences _encryptedData = EncryptedSharedPreferences();
+  final TextEditingController _controller = TextEditingController(); // hold user key from TextField
+  final EncryptedSharedPreferences _encryptedData = EncryptedSharedPreferences(); // used to store the key later
 
   @override
   void initState() {
@@ -19,7 +19,8 @@ class _HomeState extends State<Home> {
     // call the below function to check if key exists
     checkSavedData();
   }
-
+  // opens the Add Category page, if the key exists. It is called when
+  // the application starts
   void checkSavedData() {
     _encryptedData.getString('myKey').then((String myKey) {
       if (myKey.isNotEmpty) {
