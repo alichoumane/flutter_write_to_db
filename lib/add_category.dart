@@ -85,7 +85,7 @@ class _AddCategoryState extends State<AddCategory> {
                     setState(() {
                       _loading = true;
                     });
-                    saveCategory(update, int.parse(_controllerID.text.toString()), _controllerName.text.toString());
+                    addCategory(update, int.parse(_controllerID.text.toString()), _controllerName.text.toString());
                   }
                 },
                 child: const Text('Submit'),
