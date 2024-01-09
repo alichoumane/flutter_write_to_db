@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   }
 
 
-  void checkLogin() async{
+  void checkLogin() {
     // make sure the key is not empty
     if (_controller.text.toString().trim() == '') {
       update(false);

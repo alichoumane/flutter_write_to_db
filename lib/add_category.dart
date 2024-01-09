@@ -116,6 +116,7 @@ class _AddCategoryState extends State<AddCategory> {
           url,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            // 'Authorization': 'Bearer $myKey',
           }, // convert the cid, name and key to a JSON object
           body: convert.jsonEncode(<String, String>{
             'cid': '$cid', 'name': name, 'key': myKey
