@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
 EncryptedSharedPreferences _encryptedData = EncryptedSharedPreferences();
-const String _baseURL = 'mobileappdemo.000webhostapp.com';
+const String _baseURL = 'i3350.ulfs5.net';
 
 
 // below function sends the cid, name and key using http post to the REST service
