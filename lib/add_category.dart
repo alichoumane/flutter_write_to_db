@@ -4,7 +4,7 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-const String _baseURL = 'mobileappdemo.000webhostapp.com';
+const String _baseURL = 'i3350.ulfs5.net';
 
 
 class AddCategory extends StatefulWidget {
@@ -111,7 +111,9 @@ class _AddCategoryState extends State<AddCategory> {
       // we need to first retrieve and decrypt the key
       String myKey = await _encryptedData.getString('myKey');
       // send a JSON object using http post
+      print(myKey);
       final url = Uri.https(_baseURL, 'addCategory.php');
+      print(url);
       final response = await http.post(
           url,
           headers: <String, String>{
@@ -120,11 +122,13 @@ class _AddCategoryState extends State<AddCategory> {
           }, // convert the cid, name and key to a JSON object
           body: convert.jsonEncode(<String, String>{
             'cid': '$cid', 'name': name, 'key': myKey
-          })).timeout(const Duration(seconds: 5));
+          })).timeout(const Duration(seconds: 10));
           // call the update function
+          print(response.body);
           update(response.body);
     }
     catch (e) {
+      print(e);
       update("connection error");
     }
   }
