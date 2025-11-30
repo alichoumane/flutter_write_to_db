@@ -4,7 +4,7 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-const String _baseURL = 'i3350.ulfs5.net';
+const String _baseURL = 'mycompany12.atwebpages.com';
 
 
 class AddCategory extends StatefulWidget {
@@ -112,7 +112,7 @@ class _AddCategoryState extends State<AddCategory> {
       String myKey = await _encryptedData.getString('myKey');
       // send a JSON object using http post
       print(myKey);
-      final url = Uri.https(_baseURL, 'addCategory.php');
+      final url = Uri.http(_baseURL, 'addCategory.php');
       print(url);
       final response = await http.post(
           url,
