@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import 'package:encrypt_shared_preferences/provider.dart';
 import 'add_category.dart';
 
 class Home extends StatefulWidget {
@@ -10,8 +10,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final TextEditingController _controller = TextEditingController(); // hold user key from TextField
-  final EncryptedSharedPreferences _encryptedData = EncryptedSharedPreferences(); // used to store the key later
+  final TextEditingController _controller =
+      TextEditingController(); // hold user key from TextField
 
   @override
   void initState() {
@@ -19,18 +19,17 @@ class _HomeState extends State<Home> {
     // call the below function to check if key exists
     checkSavedData();
   }
+
   // opens the Add Category page, if the key exists. It is called when
   // the application starts
-  void checkSavedData() {
-    _encryptedData.getString('myKey').then((String myKey) {
-      if (myKey.isNotEmpty) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(
-            builder: (context) => const AddCategory()));
-      }
-    });
+  void checkSavedData() async {
+    String? myKey =
+        await EncryptedSharedPreferences.getInstance().getString('myKey');
+    if (myKey != null && myKey.isNotEmpty) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => const AddCategory()));
+    }
   }
-
 
   void checkLogin() {
     // make sure the key is not empty
@@ -39,9 +38,10 @@ class _HomeState extends State<Home> {
     } else {
       // attempt to save key. Saving the key and encrypting it takes time.
       // so it is done asynchronously
-      _encryptedData
+      EncryptedSharedPreferences.getInstance()
           .setString('myKey', _controller.text.toString())
-          .then((bool success) { // then is equivalent to using wait
+          .then((bool success) {
+        // then is equivalent to using wait
         if (success) {
           update(true);
         } else {
@@ -53,7 +53,8 @@ class _HomeState extends State<Home> {
 
   // this function opens the Add Category page, if we managed to save key successfully
   void update(bool success) {
-    if (success) { // open the Add Category page if successful
+    if (success) {
+      // open the Add Category page if successful
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => const AddCategory()));
     } else {
@@ -77,22 +78,21 @@ class _HomeState extends State<Home> {
       ),
       body: Center(
           child: Column(children: [
-            const SizedBox(height: 10),
-            SizedBox(
-                width: 200,
-                child: TextField(
-                  // replace typed text with * for passwords
-                  obscureText: true,
-                  enableSuggestions: false, // disable suggestions for password
-                  autocorrect: false, // disable auto correct for password
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: 'Enter Key'),
-                )),
-            const SizedBox(height: 10),
-            ElevatedButton(onPressed: checkLogin, child: const Text('Save'))
-          ])),
+        const SizedBox(height: 10),
+        SizedBox(
+            width: 200,
+            child: TextField(
+              // replace typed text with * for passwords
+              obscureText: true,
+              enableSuggestions: false, // disable suggestions for password
+              autocorrect: false, // disable auto correct for password
+              controller: _controller,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: 'Enter Key'),
+            )),
+        const SizedBox(height: 10),
+        ElevatedButton(onPressed: checkLogin, child: const Text('Save'))
+      ])),
     );
   }
-
 }
