@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import 'package:encrypt_shared_preferences/provider.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-const String _baseURL = 'i3350.ulfs5.net';
-
+const String _baseURL = 'mycompany12.atwebpages.com';
 
 class AddCategory extends StatefulWidget {
   const AddCategory({super.key});
@@ -17,9 +16,7 @@ class AddCategory extends StatefulWidget {
 class _AddCategoryState extends State<AddCategory> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   TextEditingController _controllerID = TextEditingController();
-  TextEditingController _controllerName= TextEditingController();
-  // used to retrieve the key later
-  EncryptedSharedPreferences _encryptedData = EncryptedSharedPreferences();
+  TextEditingController _controllerName = TextEditingController();
   // the below variable is used to display the progress bar when retrieving data
   bool _loading = false;
 
@@ -33,65 +30,86 @@ class _AddCategoryState extends State<AddCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(actions: [
-          IconButton(onPressed: () {
-            _encryptedData.remove('myKey').then((success) =>
-                Navigator.of(context).pop());
-          }, icon: const Icon(Icons.logout))
-        ],
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  EncryptedSharedPreferences.getInstance()
+                      .remove('myKey')
+                      .then((success) => Navigator.of(context).pop());
+                },
+                icon: const Icon(Icons.logout))
+          ],
           title: const Text('Add Category'),
           centerTitle: true,
           // the below line disables the back button on the AppBar
           automaticallyImplyLeading: false,
         ),
-        body: Center(child: Form(
-          key: _formKey, // key to uniquely identify the form when performing validation
+        body: Center(
+            child: Form(
+          key:
+              _formKey, // key to uniquely identify the form when performing validation
           child: Column(
             children: <Widget>[
               const SizedBox(height: 10),
-              SizedBox(width: 200, child: TextFormField(controller: _controllerID,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter ID',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter id';
-                  }
-                  return null;
-                },
-              )),
+              SizedBox(
+                  width: 200,
+                  child: TextFormField(
+                    controller: _controllerID,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+                    ],
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter ID',
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter id';
+                      }
+                      return null;
+                    },
+                  )),
               const SizedBox(height: 10),
-              SizedBox(width: 200, child: TextFormField(controller: _controllerName,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter Name',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter name';
-                  }
-                  return null;
-                },
-              )),
+              SizedBox(
+                  width: 200,
+                  child: TextFormField(
+                    controller: _controllerName,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter Name',
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter name';
+                      }
+                      return null;
+                    },
+                  )),
               const SizedBox(height: 10),
               ElevatedButton(
                 // we need to prevent the user from sending another request, while current
                 // request is being processed
-                onPressed: _loading ? null : () { // disable button while loading
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      _loading = true;
-                    });
-                    addCategory(update, int.parse(_controllerID.text.toString()), _controllerName.text.toString());
-                  }
-                },
+                onPressed: _loading
+                    ? null
+                    : () {
+                        // disable button while loading
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _loading = true;
+                          });
+                          addCategory(
+                              update,
+                              int.parse(_controllerID.text.toString()),
+                              _controllerName.text.toString());
+                        }
+                      },
                 child: const Text('Submit'),
               ),
               const SizedBox(height: 10),
-              Visibility(visible: _loading, child: const CircularProgressIndicator())
+              Visibility(
+                  visible: _loading, child: const CircularProgressIndicator())
             ],
           ),
         )));
@@ -104,30 +122,29 @@ class _AddCategoryState extends State<AddCategory> {
     });
   }
 
-
 // below function sends the cid, name and key using http post to the REST service
   void addCategory(Function(String text) update, int cid, String name) async {
     try {
       // we need to first retrieve and decrypt the key
-      String myKey = await _encryptedData.getString('myKey');
+      String? myKey =
+          await EncryptedSharedPreferences.getInstance().getString('myKey');
       // send a JSON object using http post
       print(myKey);
-      final url = Uri.https(_baseURL, 'addCategory.php');
+      final url = Uri.http(_baseURL, 'addCategory.php');
       print(url);
-      final response = await http.post(
-          url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            // 'Authorization': 'Bearer $myKey',
-          }, // convert the cid, name and key to a JSON object
-          body: convert.jsonEncode(<String, String>{
-            'cid': '$cid', 'name': name, 'key': myKey
-          })).timeout(const Duration(seconds: 10));
-          // call the update function
-          print(response.body);
-          update(response.body);
-    }
-    catch (e) {
+      final response = await http
+          .post(url,
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                // 'Authorization': 'Bearer $myKey',
+              }, // convert the cid, name and key to a JSON object
+              body: convert.jsonEncode(
+                  <String, String>{'cid': '$cid', 'name': name, 'key': myKey!}))
+          .timeout(const Duration(seconds: 10));
+      // call the update function
+      print(response.body);
+      update(response.body);
+    } catch (e) {
       print(e);
       update("connection error");
     }
