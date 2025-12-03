@@ -22,6 +22,15 @@ class _HomeState extends State<Home> {
   // opens the Add Category page, if the key exists. It is called when
   // the application starts
   void checkSavedData() {
+
+    /*  First solution but add async keyword
+    String? s = await _encryptedData.getString('myKey');
+     if (s != null && s.isNotEmpty){
+      Navigator.of(context)
+            .push(MaterialPageRoute(
+            builder: (context) => const AddCategory()));
+    }*/
+    // second solution
     _encryptedData.getString('myKey').then((String myKey) {
       if (myKey.isNotEmpty) {
         Navigator.of(context)
@@ -32,7 +41,7 @@ class _HomeState extends State<Home> {
   }
 
 
-  void checkLogin() {
+  void login() {
     // make sure the key is not empty
     if (_controller.text.toString().trim() == '') {
       update(false);
@@ -42,12 +51,12 @@ class _HomeState extends State<Home> {
       _encryptedData
           .setString('myKey', _controller.text.toString())
           .then((bool success) { // then is equivalent to using wait
-        if (success) {
-          update(true);
-        } else {
-          update(false);
-        }
-      });
+            if (success) {
+              update(true);
+            } else {
+              update(false);
+            }
+          });
     }
   }
 
@@ -90,7 +99,7 @@ class _HomeState extends State<Home> {
                       border: OutlineInputBorder(), hintText: 'Enter Key'),
                 )),
             const SizedBox(height: 10),
-            ElevatedButton(onPressed: checkLogin, child: const Text('Save'))
+            ElevatedButton(onPressed: login, child: const Text('Save'))
           ])),
     );
   }
